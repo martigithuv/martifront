@@ -1,273 +1,1342 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-<meta charset="UTF-8">
-<title>MartiFront E-Commerce</title>
-<link rel="icon" href="public/vite.png" type="image/png">
-<style>
-/* ---------- RESET & BODY ---------- */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { background-color: #f2f5f9; color: #333; line-height: 1.5; }
+  <meta charset="UTF-8">
+  <title>MartiShop Cataleg</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="public/vite.png" type="image/png">
+  <style>
+    :root {
+      --bg: #f2f5f9;
+      --ink: #2b2b2b;
+      --muted: #6b7280;
+      --accent: #2a5298;
+      --accent-dark: #1e3c72;
+      --card: #ffffff;
+      --line: #e5e7eb;
+      --ok: #2ecc71;
+      --warn: #e74c3c;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    header {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .brand h1 {
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .header-actions .btn {
+      font-size: 14px;
+      padding: 10px 14px;
+    }
+    .btn.cart-btn {
+      background: var(--ok);
+    }
+    .btn.cart-btn:hover { background: #27ae60; }
 
-/* ---------- HEADER ---------- */
-header {
-    background: linear-gradient(90deg, #1e3c72, #2a5298);
-    color: white;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-header h1 { font-size: 28px; letter-spacing: 1px; }
-.header-btns { display: flex; gap: 10px; }
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      padding: 30px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .panel {
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      position: sticky;
+      top: 18px;
+      height: fit-content;
+    }
+    .panel h2 {
+      font-size: 18px;
+    }
+    .field {
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+    }
+    .field label { color: var(--muted); }
+    .field input, .field select, .field button {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 14px;
+    }
+    .field input[type="range"] {
+      padding: 0;
+      border: none;
+      accent-color: var(--accent);
+    }
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s ease, opacity 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); opacity: 0.9; }
+    .btn.ghost {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
 
-.cart-btn, .login-btn {
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-.cart-btn { background-color: #2ecc71; }
-.cart-btn:hover { background-color: #27ae60; }
+    .content {
+      display: grid;
+      gap: 16px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .summary {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      text-align: center;
+    }
+    .card img {
+      width: 100%;
+      height: 240px;
+      object-fit: contain;
+      background: #fff;
+      padding: 16px;
+    }
+    .card-body {
+      padding: 14px;
+      display: grid;
+      gap: 6px;
+    }
+    .card h3 { font-size: 18px; }
+    .meta {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .price {
+      font-size: 18px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eef3fb;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .stock.ok { color: var(--ok); font-weight: 600; }
+    .stock.no { color: var(--warn); font-weight: 600; }
+    .card .btn {
+      margin: 8px auto 0;
+      padding: 8px 14px;
+      border-radius: 8px;
+    }
+    .empty {
+      padding: 24px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      text-align: center;
+      background: #fffaf2;
+    }
 
-.login-btn { background-color: #f39c12; }
-.login-btn:hover { background-color: #e67e22; }
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      place-items: center;
+      z-index: 999;
+      padding: 20px;
+    }
+    .modal.active { display: grid; }
+    .modal-card {
+      background: #fff;
+      border-radius: 14px;
+      max-width: 760px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+    }
+    .modal-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #faf6f0;
+      padding: 20px;
+    }
+    .modal-body {
+      padding: 20px;
+      display: grid;
+      gap: 10px;
+    }
+    .modal-title { font-size: 22px; }
+    .modal-desc { color: var(--muted); font-size: 14px; }
+    .modal-close {
+      border: none;
+      background: transparent;
+      font-size: 22px;
+      cursor: pointer;
+      justify-self: end;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
 
-/* ---------- MODAL LOGIN ---------- */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 1000;
-    visibility: hidden; opacity: 0;
-    transition: all 0.3s ease;
-}
-.modal-overlay.active { visibility: visible; opacity: 1; }
+    footer {
+      padding: 16px;
+      text-align: center;
+      color: #fff;
+      background: #2a5298;
+      margin-top: 30px;
+      font-size: 13px;
+    }
 
-.login-form {
-    background: white; padding: 30px; border-radius: 12px;
-    width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    position: relative;
-}
-.login-form h2 { margin-bottom: 20px; color: #1e3c72; text-align: center; }
-.login-form input {
-    width: 100%; padding: 12px; margin-bottom: 15px;
-    border: 1px solid #ccc; border-radius: 6px;
-}
-.login-form button {
-    width: 100%; padding: 12px; background: #1e3c72;
-    color: white; border: none; border-radius: 6px; cursor: pointer;
-}
-.close-modal {
-    position: absolute; top: 10px; right: 15px;
-    font-size: 20px; cursor: pointer; color: #999;
-}
+    @media (max-width: 1050px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 900px) {
+      header { padding: 16px 20px; }
+      .layout { grid-template-columns: 1fr; }
+      .panel { position: static; }
+      .grid { grid-template-columns: 1fr; }
+      .modal-card { grid-template-columns: 1fr; }
+    }
 
-/* ---------- CART ---------- */
-.cart {
-    position: fixed; top: 90px; right: 20px; width: 350px;
-    background-color: white; border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2); padding: 20px;
-    transition: transform 0.4s ease, opacity 0.4s ease; z-index: 100;
-}
-.cart.folded { transform: translateX(400px); opacity: 0; }
-.cart.unfolded { transform: translateX(0); opacity: 1; }
-.cart h2 { margin-bottom: 15px; color: #2a5298; }
-.cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; }
-.cart-item button { background-color: #e74c3c; border: none; color: white; border-radius: 4px; padding: 5px 10px; cursor: pointer; transition: background 0.3s ease; }
-.cart-item button:hover { background-color: #c0392b; }
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: grid;
+      place-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 22px;
+      width: min(360px, 90vw);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      display: grid;
+      gap: 10px;
+    }
+    .login-card h2 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    .login-card input {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .login-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #f6f7fb;
+      border-radius: 999px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .login-tab {
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .login-tab.active {
+      background: #fff;
+      color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .auth-panel {
+      display: grid;
+      gap: 10px;
+    }
+    .auth-panel[hidden] {
+      display: none;
+    }
+    .login-note {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .login-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 4px 0;
+    }
+    .login-checks {
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .login-checks label {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .login-checks input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--accent);
+    }
+    .login-error {
+      color: var(--warn);
+      font-size: 12px;
+      min-height: 16px;
+    }
 
-/* ---------- STORE ---------- */
-.store {
-    max-width: 1200px;
-    margin: 50px auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    padding: 0 20px;
-}
-.product {
-    background-color: white;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.product:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-}
-.product img {
-    width: 100%;
-    max-height: 220px;
-    object-fit: contain;
-    margin-bottom: 15px;
-}
-.product h3 { margin-bottom: 10px; font-size: 20px; color: #1e3c72; }
-.product p { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #2a5298; }
-.product button {
-    background-color: #2a5298;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: background-color 0.3s ease;
-}
-.product button:hover { background-color: #1e3c72; }
+    .cart {
+      position: fixed;
+      right: 20px;
+      top: 90px;
+      width: 320px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      z-index: 900;
+      transform: translateX(380px);
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .cart.open {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .cart h3 { font-size: 16px; margin-bottom: 10px; color: var(--accent); }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .cart-item button {
+      border: none;
+      background: var(--warn);
+      color: #fff;
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .cart-item .cart-link {
+      background: transparent;
+      border: none;
+      color: var(--accent-dark);
+      cursor: pointer;
+      text-align: left;
+      font-weight: 600;
+      padding: 0;
+      font-size: 13px;
+      text-decoration: underline;
+    }
 
-/* ---------- POPUP ---------- */
-.popup {
-    position: fixed; bottom: 30px; right: 30px;
-    background-color: #2ecc71;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-    font-size: 15px;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    z-index: 200;
-}
-.popup.hidden { opacity: 0; transform: translateY(20px); pointer-events: none; }
+    .checkout-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      place-items: center;
+      z-index: 1200;
+      padding: 20px;
+    }
+    .checkout-overlay.active { display: grid; }
+    .checkout-card {
+      width: min(860px, 96vw);
+      max-height: 92vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    .checkout-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+    .checkout-head h3 {
+      color: var(--accent-dark);
+      font-size: 22px;
+    }
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .checkout-section {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      background: #fbfcff;
+    }
+    .checkout-section h4 {
+      font-size: 15px;
+      color: var(--accent-dark);
+    }
+    .checkout-section input,
+    .checkout-section select {
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      font-size: 14px;
+      width: 100%;
+    }
+    .checkout-list {
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+    }
+    .checkout-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid #edf1f7;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .checkout-item.active {
+      border-color: var(--accent);
+      background: #f2f6ff;
+    }
+    .checkout-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      color: var(--accent-dark);
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+    .checkout-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .checkout-msg {
+      min-height: 18px;
+      color: var(--warn);
+      font-size: 13px;
+    }
+    .checkout-success {
+      color: var(--ok);
+      font-weight: 600;
+    }
 
-/* ---------- FOOTER ---------- */
-footer {
-    background-color: #2a5298;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    margin-top: 50px;
-}
-</style>
+    @media (max-width: 900px) {
+      .checkout-grid { grid-template-columns: 1fr; }
+    }
+
+    .popup {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--ok);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      font-size: 14px;
+      z-index: 950;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+    }
+    .popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
+  <div id="loginOverlay" class="login-overlay" role="dialog" aria-modal="true">
+    <div class="login-card" role="document">
+      <div class="login-tabs" role="tablist" aria-label="Autenticación">
+        <button id="tabLogin" class="login-tab active" role="tab" aria-selected="true" aria-controls="panelLogin">Iniciar sesión</button>
+        <button id="tabSignup" class="login-tab" role="tab" aria-selected="false" aria-controls="panelSignup">Crear cuenta</button>
+      </div>
 
-<header>
-    <h1>PRO FOOTBALL BOOTS</h1>
-    <div class="header-btns">
-        <button class="login-btn" onclick="toggleLoginModal()">👤 Iniciar sessió</button>
-        <button class="cart-btn" onclick="toggleCart()">🛒 Cistella</button>
+      <form id="loginForm" class="auth-panel" role="tabpanel" aria-labelledby="tabLogin">
+        <h2>Iniciar sesión</h2>
+        <p class="login-note">Accede con tus datos para continuar.</p>
+        <input id="loginUser" type="text" placeholder="Usuario o email" required>
+        <input id="loginPass" type="password" placeholder="Contraseña" required>
+        <div class="login-checks">
+          <label>
+            <input id="acceptPrivacy" type="checkbox" required>
+            <span>Acepto la política de privacidad.</span>
+          </label>
+          <label>
+            <input id="acceptAds" type="checkbox">
+            <span>Acepto recibir publicidad y comunicaciones comerciales.</span>
+          </label>
+        </div>
+        <div id="loginError" class="login-error" aria-live="polite"></div>
+        <button class="btn" type="submit">Entrar</button>
+      </form>
+
+      <form id="signupForm" class="auth-panel" role="tabpanel" aria-labelledby="tabSignup" hidden>
+        <h2>Crear cuenta</h2>
+        <p class="login-note">Nuevo usuario. Completa el registro para empezar.</p>
+        <input id="signupName" type="text" placeholder="Nombre completo" required>
+        <input id="signupEmail" type="email" placeholder="Email" required>
+        <input id="signupPass" type="password" placeholder="Contraseña" required>
+        <div class="login-checks">
+          <label>
+            <input id="signupPrivacy" type="checkbox" required>
+            <span>Acepto la política de privacidad.</span>
+          </label>
+          <label>
+            <input id="signupAds" type="checkbox">
+            <span>Acepto recibir publicidad y comunicaciones comerciales.</span>
+          </label>
+        </div>
+        <div id="signupError" class="login-error" aria-live="polite"></div>
+        <button class="btn" type="submit">Crear cuenta</button>
+      </form>
     </div>
-</header>
+  </div>
 
-<div id="loginModal" class="modal-overlay" onclick="toggleLoginModal()">
-    <div class="login-form" onclick="event.stopPropagation()">
-        <span class="close-modal" onclick="toggleLoginModal()">&times;</span>
-        <h2>Iniciar sessió</h2>
-        <form id="formLogin">
-            <input type="email" placeholder="Correu electrònic" required>
-            <input type="password" placeholder="Contrasenya" required>
-            <button type="submit">Entrar</button>
-        </form>
+  <header>
+    <div class="brand">
+      <h1>PRO FOOTBALL BOOTS</h1>
     </div>
-</div>
-
-<div id="popup" class="popup hidden">El producte s'ha afegit correctament a la cistella</div>
-
-<div id="cart" class="cart folded">
-    <h2>La teva cistella</h2>
-    <div id="cartItems"><p>Cistella buida</p></div>
-</div>
-
-<main class="store">
-    <div class="product">
-        <img src="./public/bota1.jpg" alt="Bota 1">
-        <h3>Adidas Predator</h3>
-        <p>120 €</p>
-        <button onclick="addToCart({nom:'Adidas Predator', preu:120, imatge:'./public/bota1.jpg'})">Afegir a la cistella</button>
+    <div class="header-actions">
+      <button id="openCart" class="btn cart-btn">Cistella</button>
     </div>
-    <div class="product">
-        <img src="./public/botas2.jpg" alt="Bota 2">
-        <h3>Nike Mercurial</h3>
-        <p>130 €</p>
-        <button onclick="addToCart({nom:'Nike Mercurial', preu:130, imatge:'./public/botas2.jpg'})">Afegir a la cistella</button>
+  </header>
+
+  <main class="layout">
+    <aside class="panel" aria-label="Filtres">
+      <h2>Filtres</h2>
+      <div class="field">
+        <label for="q">Cerca</label>
+        <input id="q" type="text" placeholder="Marca, model o descripcio">
+      </div>
+      <div class="field">
+        <label for="category">Categoria</label>
+        <select id="category"></select>
+      </div>
+      <div class="field">
+        <label for="brand">Marca</label>
+        <select id="brand"></select>
+      </div>
+      <div class="field">
+        <label for="price">Preu maxim: <span id="priceValue"></span></label>
+        <input id="price" type="range" min="40" max="250" step="5" value="250">
+      </div>
+      <div class="field">
+        <label for="stock">
+          <input id="stock" type="checkbox">
+          Només amb stock
+        </label>
+      </div>
+      <div class="field">
+        <label for="sort">Ordenar</label>
+        <select id="sort">
+          <option value="featured">Destacats</option>
+          <option value="price-asc">Preu (baix a alt)</option>
+          <option value="price-desc">Preu (alt a baix)</option>
+          <option value="name-asc">Nom A-Z</option>
+        </select>
+      </div>
+      <div class="field">
+        <button id="reset" class="btn ghost">Netejar filtres</button>
+      </div>
+    </aside>
+
+    <section class="content" aria-label="Llistat de productes">
+      <div class="toolbar">
+        <div class="summary" id="summary">0 productes</div>
+        <div class="summary" id="activeFilters">Sense filtres actius</div>
+      </div>
+      <div id="grid" class="grid"></div>
+      <div id="empty" class="empty" hidden>No hi ha productes que coincideixin amb els filtres.</div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <img id="modalImg" alt="">
+      <div class="modal-body">
+        <button class="modal-close" id="closeModal" aria-label="Tancar">x</button>
+        <h3 id="modalTitle" class="modal-title"></h3>
+        <div class="price" id="modalPrice"></div>
+        <p class="modal-desc" id="modalDesc"></p>
+        <div class="detail-grid" id="modalDetails"></div>
+        <button class="btn" id="modalAdd">Afegir a la cistella</button>
+      </div>
     </div>
-    <div class="product">
-        <img src="./public/botas3.png" alt="Bota 3">
-        <h3>Puma Future</h3>
-        <p>110 €</p>
-        <button onclick="addToCart({nom:'Puma Future', preu:110, imatge:'./public/botas3.png'})">Afegir a la cistella</button>
+  </div>
+
+  <div id="cart" class="cart" aria-live="polite">
+    <h3>La teva cistella</h3>
+    <div id="cartItems">Cistella buida</div>
+  </div>
+
+  <div id="checkoutOverlay" class="checkout-overlay" aria-modal="true" role="dialog">
+    <div class="checkout-card" role="document">
+      <div class="checkout-head">
+        <h3>Checkout</h3>
+        <button id="closeCheckout" class="btn ghost" type="button">Tancar</button>
+      </div>
+
+      <form id="checkoutForm" class="checkout-grid">
+        <section class="checkout-section">
+          <h4>1. Revisa la cistella</h4>
+          <div id="checkoutItems" class="checkout-list"></div>
+          <div class="checkout-total">
+            <span>Total</span>
+            <span id="checkoutTotal">0 EUR</span>
+          </div>
+        </section>
+
+        <section class="checkout-section">
+          <h4>2. Dades del client</h4>
+          <input id="coName" type="text" placeholder="Nom complet" required>
+          <input id="coAddress" type="text" placeholder="Adreca de lliurament" required>
+          <input id="coEmail" type="email" placeholder="Email" required>
+        </section>
+
+        <section class="checkout-section">
+          <h4>3. Metode d'enviament</h4>
+          <select id="coShipping" required>
+            <option value="">Selecciona enviament</option>
+            <option value="standard">Standard (3-5 dies) - 4.99 EUR</option>
+            <option value="express">Express (24-48h) - 9.99 EUR</option>
+            <option value="store">Recollida en botiga - 0 EUR</option>
+          </select>
+        </section>
+
+        <section class="checkout-section">
+          <h4>4. Metode de pagament</h4>
+          <select id="coPayment" required>
+            <option value="">Selecciona pagament</option>
+            <option value="card">Targeta</option>
+            <option value="paypal">PayPal</option>
+            <option value="transfer">Transferencia bancaria</option>
+          </select>
+          <input id="coCard" type="text" placeholder="Numero de pagament (demo)" required>
+        </section>
+
+        <section class="checkout-section" style="grid-column: 1 / -1;">
+          <h4>5. Confirmacio</h4>
+          <div id="checkoutMessage" class="checkout-msg"></div>
+          <div class="checkout-actions">
+            <button type="button" id="checkoutCancel" class="btn ghost">Cancelar</button>
+            <button type="submit" class="btn">Confirmar pedido</button>
+          </div>
+        </section>
+      </form>
     </div>
-</main>
+  </div>
 
-<footer>
-    <p>© 2026 Pro Football Boots - Botiga professional</p>
-</footer>
+  <div id="popup" class="popup">El producte s'ha afegit correctament a la cistella</div>
 
-<script>
-let cartItems = [];
+  <footer>
+    © 2026 Pro Football Boots - Tienda profesional
+  </footer>
 
-// Funciones para el Modal de Login
-function toggleLoginModal() {
-    const modal = document.getElementById("loginModal");
-    modal.classList.toggle("active");
-}
+  <script>
+    const products = [
+      {
+        id: "p1",
+        name: "Nike Mercurial Aero X",
+        brand: "Nike",
+        category: "roba",
+        price: 189.99,
+        stock: 25,
+        featured: true,
+        image: "./public/botas2.jpg",
+        description: "Bota ultra lleugera per velocitat i acceleracio."
+      },
+      {
+        id: "p2",
+        name: "Nike Phantom Control Pro",
+        brand: "Nike",
+        category: "roba",
+        price: 120.99,
+        stock: 15,
+        featured: true,
+        image: "./public/nikep2.png",
+        description: "Pensada per a control i passada precisa."
+      },
+      {
+        id: "p3",
+        name: "Adidas Predator Impact",
+        brand: "Adidas",
+        category: "roba",
+        price: 110.5,
+        stock: 20,
+        featured: true,
+        image: "./public/bota1.jpg",
+        description: "Superficie de grip per xuts amb efecte."
+      },
+      {
+        id: "p4",
+        name: "Puma Future Flex",
+        brand: "Puma",
+        category: "roba",
+        price: 105.75,
+        stock: 10,
+        featured: false,
+        image: "./public/pumap4.png",
+        description: "Ajust elastic per canvis de direccio."
+      },
+      {
+        id: "p5",
+        name: "Nike Pro Speedstrike",
+        brand: "Nike",
+        category: "roba",
+        price: 199.99,
+        stock: 18,
+        featured: true,
+        image: "./public/nikep4.png",
+        description: "Maxima velocitat amb placa reactiva."
+      },
+      {
+        id: "p6",
+        name: "Adidas Elite Control",
+        brand: "Adidas",
+        category: "roba",
+        price: 189.99,
+        stock: 9,
+        featured: true,
+        image: "./public/adidasp6.png",
+        description: "Control extra amb ajust comode i lleuger."
+      },
+      {
+        id: "p7",
+        name: "Puma Future Play",
+        brand: "Puma",
+        category: "roba",
+        price: 179.99,
+        stock: 12,
+        featured: false,
+        image: "./public/pumap7.png",
+        description: "Flexibilitat i tacte suau per a mes precisio."
+      },
+      {
+        id: "p8",
+        name: "Adidas Copa Pulse",
+        brand: "Adidas",
+        category: "roba",
+        price: 209.99,
+        stock: 6,
+        featured: true,
+        image: "./public/adidasp8.png",
+        description: "Tacte classic amb materials moderns."
+      },
+      {
+        id: "p9",
+        name: "Puma Ultra Sprint",
+        brand: "Puma",
+        category: "roba",
+        price: 169.99,
+        stock: 14,
+        featured: false,
+        image: "./public/pumap9.png",
+        description: "Pensada per a jugadors rapids."
+      }
+    ];
 
-document.getElementById("formLogin").addEventListener("submit", (e) => {
-    e.preventDefault();
-    showPopup("Sessió iniciada correctament");
-    toggleLoginModal();
+    const grid = document.getElementById("grid");
+    const empty = document.getElementById("empty");
+    const summary = document.getElementById("summary");
+    const activeFilters = document.getElementById("activeFilters");
+    const q = document.getElementById("q");
+    const category = document.getElementById("category");
+    const brand = document.getElementById("brand");
+    const API_BASE = "http://localhost:3000/api";
+    const USER_ID = "demo-user";
+    let allProducts = [];
+    const price = document.getElementById("price");
+    const priceValue = document.getElementById("priceValue");
+    const stock = document.getElementById("stock");
+    const sort = document.getElementById("sort");
+    const reset = document.getElementById("reset");
+
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modalImg");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalPrice = document.getElementById("modalPrice");
+    const modalDesc = document.getElementById("modalDesc");
+    const modalDetails = document.getElementById("modalDetails");
+    const closeModal = document.getElementById("closeModal");
+    const modalAdd = document.getElementById("modalAdd");
+    const loginOverlay = document.getElementById("loginOverlay");
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const tabLogin = document.getElementById("tabLogin");
+    const tabSignup = document.getElementById("tabSignup");
+    const loginUser = document.getElementById("loginUser");
+    const loginPass = document.getElementById("loginPass");
+    const acceptPrivacy = document.getElementById("acceptPrivacy");
+    const acceptAds = document.getElementById("acceptAds");
+    const loginError = document.getElementById("loginError");
+    const signupName = document.getElementById("signupName");
+    const signupEmail = document.getElementById("signupEmail");
+    const signupPass = document.getElementById("signupPass");
+    const signupPrivacy = document.getElementById("signupPrivacy");
+    const signupAds = document.getElementById("signupAds");
+    const signupError = document.getElementById("signupError");
+    const cart = document.getElementById("cart");
+    const cartItems = document.getElementById("cartItems");
+    const openCart = document.getElementById("openCart");
+    const popup = document.getElementById("popup");
+    const checkoutOverlay = document.getElementById("checkoutOverlay");
+    const closeCheckout = document.getElementById("closeCheckout");
+    const checkoutCancel = document.getElementById("checkoutCancel");
+    const checkoutForm = document.getElementById("checkoutForm");
+    const checkoutItems = document.getElementById("checkoutItems");
+    const checkoutTotal = document.getElementById("checkoutTotal");
+    const checkoutMessage = document.getElementById("checkoutMessage");
+    const coName = document.getElementById("coName");
+    const coAddress = document.getElementById("coAddress");
+    const coEmail = document.getElementById("coEmail");
+    const coShipping = document.getElementById("coShipping");
+    const coPayment = document.getElementById("coPayment");
+    const coCard = document.getElementById("coCard");
+    let cartState = [];
+    let currentProduct = null;
+    let selectedCartIndex = -1;
+
+    function uniqueValues(items, key) {
+      const set = new Set();
+      items.forEach((item) => set.add(item[key]));
+      return Array.from(set).sort((a, b) => ("" + a).localeCompare("" + b));
+    }
+
+    function fillSelect(select, values, label) {
+      select.innerHTML = "";
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = `Totes (${label})`;
+      select.appendChild(first);
+      values.forEach((value) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+    }
+
+    function filterProducts() {
+      const query = q.value.trim().toLowerCase();
+      const categoryValue = category.value;
+      const brandValue = brand.value;
+      const priceValueNum = Number(price.value);
+      const stockOnly = stock.checked;
+
+      let filtered = allProducts.filter((p) => {
+        const matchesQuery =
+          !query ||
+          p.name.toLowerCase().includes(query) ||
+          p.description.toLowerCase().includes(query);
+        const matchesCategory = !categoryValue || p.category === categoryValue;
+        const matchesBrand = !brandValue || p.brand === brandValue;
+        const matchesPrice = p.price <= priceValueNum;
+        const matchesStock = !stockOnly || p.stock > 0;
+        return (
+          matchesQuery &&
+          matchesCategory &&
+          matchesBrand &&
+          matchesPrice &&
+          matchesStock
+        );
+      });
+
+      filtered = sortProducts(filtered);
+      renderProducts(filtered);
+      updateSummary(filtered.length);
+      updateActiveFilters();
+    }
+
+    function sortProducts(items) {
+      const copy = [...items];
+      switch (sort.value) {
+        case "price-asc":
+          return copy.sort((a, b) => a.price - b.price);
+        case "price-desc":
+          return copy.sort((a, b) => b.price - a.price);
+        case "name-asc":
+          return copy.sort((a, b) => a.name.localeCompare(b.name));
+        default:
+          return copy.sort((a, b) => (b.featured === a.featured ? 0 : b.featured ? 1 : -1));
+      }
+    }
+
+    function renderProducts(items) {
+      grid.innerHTML = "";
+      if (items.length === 0) {
+        empty.hidden = false;
+        return;
+      }
+      empty.hidden = true;
+      items.forEach((p) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}">
+          <div class="card-body">
+            <h3>${p.name}</h3>
+            <div class="meta">
+              <span class="pill">${p.category}</span>
+              <span class="pill">${p.brand}</span>
+              <span class="pill">${p.active ? "Actiu" : "No actiu"}</span>
+            </div>
+            <div class="price">${p.price} EUR</div>
+            <div class="meta">
+              <span class="stock ${p.stock > 0 ? "ok" : "no"}">
+                ${p.stock > 0 ? "Stock: " + p.stock : "Sense stock"}
+              </span>
+            </div>
+            <button class="btn" data-id="${p.id}">Veure detall</button>
+          </div>
+        `;
+        card.querySelector("button").addEventListener("click", () => openDetail(p));
+        grid.appendChild(card);
+      });
+    }
+
+    function openDetail(product) {
+      currentProduct = product;
+      modalImg.src = product.image;
+      modalImg.alt = product.name;
+      modalTitle.textContent = product.name;
+      modalPrice.textContent = product.price + " EUR";
+      modalDesc.textContent = product.description || "Sense descripcio.";
+      modalDetails.innerHTML = `
+        <div>Marca: ${product.brand}</div>
+        <div>Categoria: ${product.category}</div>
+        <div>Stock: ${product.stock}</div>
+        <div>ID: ${product.id}</div>
+      `;
+      modal.classList.add("active");
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDetail() {
+      modal.classList.remove("active");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    function updateSummary(count) {
+      summary.textContent = count + " productes";
+    }
+
+    function updateActiveFilters() {
+      const parts = [];
+      if (q.value.trim()) parts.push(`Cerca: "${q.value.trim()}"`);
+      if (category.value) parts.push("Categoria: " + category.value);
+      if (brand.value) parts.push("Marca: " + brand.value);
+      if (Number(price.value) < 250) parts.push("Preu <= " + price.value + " EUR");
+      if (stock.checked) parts.push("Amb stock");
+      activeFilters.textContent = parts.length ? parts.join(" | ") : "Sense filtres actius";
+    }
+
+    function resetFilters() {
+      q.value = "";
+      category.value = "";
+      brand.value = "";
+      price.value = 250;
+      stock.checked = false;
+      sort.value = "featured";
+      priceValue.textContent = price.value + " EUR";
+      filterProducts();
+    }
+
+    async function loadProducts() {
+      try {
+        const response = await fetch(`${API_BASE}/products`);
+        if (!response.ok) throw new Error("No response");
+        const data = await response.json();
+        return data.map((p) => ({
+          id: p._id || p.id,
+          name: p.name || "Sense nom",
+          brand: p.brand || "Nike",
+          category: p.category || "altres",
+          price: Number(p.price || 0),
+          stock: Number(p.stock || 0),
+          active: p.active !== false,
+          featured: false,
+          image: "./public/bota1.jpg",
+          description: p.description || ""
+        }));
+      } catch (err) {
+        return products;
+      }
+    }
+
+    async function init() {
+      allProducts = await loadProducts();
+      fillSelect(category, uniqueValues(allProducts, "category"), "categories");
+      fillSelect(brand, uniqueValues(allProducts, "brand"), "marques");
+      priceValue.textContent = price.value + " EUR";
+      filterProducts();
+    }
+
+    [q, category, brand, price, stock, sort].forEach((el) => {
+      el.addEventListener("input", filterProducts);
+      el.addEventListener("change", filterProducts);
+    });
+    reset.addEventListener("click", resetFilters);
+    closeModal.addEventListener("click", closeDetail);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeDetail();
+    });
+    modalAdd.addEventListener("click", () => {
+      const name = modalTitle.textContent;
+      const priceText = modalPrice.textContent.replace(" EUR", "");
+      addToCart({
+        id: currentProduct ? currentProduct.id : name,
+        name,
+        price: Number(priceText)
+      });
+    });
+
+    function renderCart() {
+      if (cartState.length === 0) {
+        cartItems.textContent = "Cistella buida";
+        return;
+      }
+      cartItems.innerHTML = "";
+      cartState.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "cart-item";
+        row.innerHTML = `
+          <button type="button" class="cart-link" data-open="${index}">${item.name} - ${item.price} EUR</button>
+          <button data-index="${index}">x</button>
+        `;
+        row.querySelector("[data-open]").addEventListener("click", () => {
+          openCheckout(index);
+        });
+        row.querySelector("[data-index]").addEventListener("click", () => {
+          removeFromCart(index, item.id);
+        });
+        cartItems.appendChild(row);
+      });
+    }
+
+    function renderCheckoutSummary() {
+      checkoutItems.innerHTML = "";
+      const shippingPrices = { standard: 4.99, express: 9.99, store: 0 };
+      const shippingCost = shippingPrices[coShipping.value] || 0;
+      const subtotal = cartState.reduce((sum, item) => sum + Number(item.price || 0), 0);
+      const total = subtotal + shippingCost;
+
+      cartState.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = `checkout-item ${index === selectedCartIndex ? "active" : ""}`;
+        row.innerHTML = `<span>${item.name}</span><span>${item.price} EUR</span>`;
+        checkoutItems.appendChild(row);
+      });
+
+      checkoutTotal.textContent = `${total.toFixed(2)} EUR`;
+    }
+
+    function openCheckout(index) {
+      if (!cartState.length) return;
+      selectedCartIndex = typeof index === "number" ? index : 0;
+      checkoutMessage.textContent = "";
+      checkoutMessage.classList.remove("checkout-success");
+      renderCheckoutSummary();
+      checkoutOverlay.classList.add("active");
+      lockScroll(true);
+    }
+
+    function closeCheckoutModal() {
+      checkoutOverlay.classList.remove("active");
+      checkoutMessage.textContent = "";
+      checkoutMessage.classList.remove("checkout-success");
+      checkoutForm.reset();
+      lockScroll(false);
+    }
+
+    function showPopup(message) {
+      popup.textContent = message;
+      popup.classList.add("show");
+      setTimeout(() => popup.classList.remove("show"), 1800);
+    }
+
+    async function addToCart(item) {
+      cartState.push(item);
+      renderCart();
+      showPopup("El producte s'ha afegit correctament a la cistella");
+      try {
+        await fetch(`${API_BASE}/cistella/afegir`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: USER_ID,
+            productId: item.id || item.name,
+            productName: item.name,
+            price: item.price,
+            quantitat: 1
+          })
+        });
+      } catch (err) {
+        console.log("Backend no disponible");
+      }
+    }
+
+    async function loadCart() {
+      try {
+        const response = await fetch(`${API_BASE}/cistella/${USER_ID}`);
+        if (!response.ok) throw new Error("No response");
+        const data = await response.json();
+        const items =
+          (data && data.cistella && Array.isArray(data.cistella.items) && data.cistella.items) ||
+          (data && Array.isArray(data.items) && data.items) ||
+          (data && Array.isArray(data.cistella) && data.cistella) ||
+          (Array.isArray(data) && data) ||
+          [];
+        cartState = items.map((item) => ({
+          id: item.productId || item._id || item.id || item.name,
+          name: item.productName || item.name || "Producte",
+          price: Number(item.price || item.preu || 0)
+        }));
+        renderCart();
+      } catch (err) {
+        console.log("No s'ha pogut carregar la cistella");
+      }
+    }
+
+    async function removeFromCart(index, itemId) {
+      cartState.splice(index, 1);
+      renderCart();
+      try {
+        await fetch(`${API_BASE}/cistella/eliminar/${itemId}`, {
+          method: "DELETE"
+        });
+      } catch (err) {
+        console.log("No s'ha pogut eliminar del backend");
+      }
+    }
+
+    function lockScroll(lock) {
+      document.body.style.overflow = lock ? "hidden" : "";
+    }
+
+    function setAuthTab(tab) {
+      const isLogin = tab === "login";
+      tabLogin.classList.toggle("active", isLogin);
+      tabLogin.setAttribute("aria-selected", String(isLogin));
+      tabSignup.classList.toggle("active", !isLogin);
+      tabSignup.setAttribute("aria-selected", String(!isLogin));
+      loginForm.hidden = !isLogin;
+      signupForm.hidden = isLogin;
+      loginError.textContent = "";
+      signupError.textContent = "";
+    }
+
+    tabLogin.addEventListener("click", () => setAuthTab("login"));
+    tabSignup.addEventListener("click", () => setAuthTab("signup"));
+
+    loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  loginError.textContent = "";
+  if (!acceptPrivacy.checked) {
+    loginError.textContent = "Debes aceptar la pol�tica de privacidad.";
+    return;
+  }
+  try {
+    const response = await fetch("http://127.0.0.1:3000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user: loginUser.value.trim(),
+        password: loginPass.value,
+        aceptaTerminos: acceptPrivacy.checked,
+        aceptaPublicidad: acceptAds.checked
+      })
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.message || "Error en el login");
+    }
+
+    loginOverlay.style.display = "none";
+    lockScroll(false);
+  } catch (err) {
+    loginError.textContent = err.message || "Error en el login";
+  }
 });
 
-function toggleCart() {
-    const cart = document.getElementById("cart");
-    cart.classList.toggle("folded");
-    cart.classList.toggle("unfolded");
-}
-
-function showPopup(message = "El producte s'ha afegit correctament a la cistella") {
-    const popup = document.getElementById("popup");
-    popup.textContent = message;
-    popup.classList.remove("hidden");
-    setTimeout(() => popup.classList.add("hidden"), 2000);
-}
-
-function renderCart() {
-    const container = document.getElementById("cartItems");
-    container.innerHTML = "";
-    if(cartItems.length === 0) { 
-        container.innerHTML = "<p>Cistella buida</p>"; 
-        return; 
-    }
-    cartItems.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "cart-item";
-        div.innerHTML = `
-            <span>${item.nom} - ${item.preu}€</span>
-            <button onclick="removeFromCart(${index})">❌</button>
-        `;
-        container.appendChild(div);
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  signupError.textContent = "";
+  if (!signupPrivacy.checked) {
+    signupError.textContent = "Debes aceptar la pol�tica de privacidad.";
+    return;
+  }
+  try {
+    const response = await fetch("http://127.0.0.1:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: signupName.value.trim(),
+        email: signupEmail.value.trim(),
+        password: signupPass.value,
+        aceptaTerminos: signupPrivacy.checked,
+        aceptaPublicidad: signupAds.checked
+      })
     });
-}
 
-async function addToCart(product) {
-    cartItems.push(product);
-    renderCart();
-    showPopup("Producte afegit a la cistella correctament");
-
-    try {
-        await fetch("http://127.0.0.1:3000/cart", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(product)
-        });
-    } catch (e) {
-        console.log("Backend no disponible");
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.message || "Error creando la cuenta");
     }
-}
 
-function removeFromCart(index) {
-    cartItems.splice(index, 1);
-    renderCart();
-    showPopup("Producte eliminat de la cistella");
-}
-</script>
+    signupForm.reset();
+    setAuthTab("login");
+  } catch (err) {
+    signupError.textContent = err.message || "Error creando la cuenta";
+  }
+});
 
+openCart.addEventListener("click", () => {
+      cart.classList.toggle("open");
+      if (cart.classList.contains("open")) {
+        loadCart();
+      }
+    });
+
+    coShipping.addEventListener("change", renderCheckoutSummary);
+
+    closeCheckout.addEventListener("click", closeCheckoutModal);
+    checkoutCancel.addEventListener("click", closeCheckoutModal);
+    checkoutOverlay.addEventListener("click", (e) => {
+      if (e.target === checkoutOverlay) {
+        closeCheckoutModal();
+      }
+    });
+
+    checkoutForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!cartState.length) {
+        checkoutMessage.textContent = "La cistella esta buida.";
+        checkoutMessage.classList.remove("checkout-success");
+        return;
+      }
+
+      const shippingPrices = { standard: 4.99, express: 9.99, store: 0 };
+      const shippingCost = shippingPrices[coShipping.value] || 0;
+      const subtotal = cartState.reduce((sum, item) => sum + Number(item.price || 0), 0);
+      const total = subtotal + shippingCost;
+
+      const payload = {
+        nombre: coName.value.trim(),
+        email: coEmail.value.trim(),
+        adreca: coAddress.value.trim(),
+        metodeEnviament: coShipping.value,
+        metodePagament: coPayment.value,
+        referenciaPagament: coCard.value.trim(),
+        productes: cartState.map((item) => ({
+          productId: item.id || item.name,
+          nom: item.name,
+          preu: Number(item.price || 0)
+        })),
+        subtotal,
+        costEnviament: shippingCost,
+        total
+      };
+
+      try {
+        const response = await fetch("http://127.0.0.1:3000/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.message || "No se pudo guardar el pedido");
+        }
+
+        checkoutMessage.textContent = "Pedido confirmat i guardat a MongoDB.";
+        checkoutMessage.classList.add("checkout-success");
+        showPopup("Pedido confirmat");
+        cartState = [];
+        renderCart();
+        setTimeout(() => {
+          closeCheckoutModal();
+        }, 1200);
+      } catch (err) {
+        checkoutMessage.textContent = err.message || "Error al guardar pedido";
+        checkoutMessage.classList.remove("checkout-success");
+      }
+    });
+
+    init();
+    lockScroll(true);
+  </script>
 </body>
 </html>
+
