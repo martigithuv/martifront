@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ca">
+
 <head>
+  <script src='https://js.stripe.com/v3/'></script>
   <meta charset="UTF-8">
   <title>MartiShop Cataleg</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,13 +20,24 @@
       --warn: #e74c3c;
       --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
     body {
       font-family: "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--ink);
       line-height: 1.5;
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
     }
+
     header {
       padding: 20px 40px;
       display: flex;
@@ -32,25 +45,49 @@
       align-items: center;
       background: linear-gradient(90deg, var(--accent-dark), var(--accent));
       color: #fff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
+
     .brand h1 {
       font-size: 28px;
       letter-spacing: 1px;
     }
+
     .header-actions {
       display: flex;
       gap: 10px;
       align-items: center;
     }
+
     .header-actions .btn {
       font-size: 14px;
       padding: 10px 14px;
+      border-radius: 10px;
     }
+
     .btn.cart-btn {
       background: var(--ok);
     }
-    .btn.cart-btn:hover { background: #27ae60; }
+
+    .btn.cart-btn:hover {
+      background: #27ae60;
+    }
+
+    .btn.profile-btn {
+      background: var(--accent);
+    }
+
+    .btn.profile-btn:hover {
+      background: var(--accent-dark);
+    }
+
+    .btn.logout-btn {
+      background: #e74c3c;
+    }
+
+    .btn.logout-btn:hover {
+      background: #cf3f31;
+    }
 
     .layout {
       display: grid;
@@ -61,6 +98,7 @@
       margin: 0 auto;
       align-items: start;
     }
+
     .panel {
       background: var(--card);
       border-radius: 12px;
@@ -72,27 +110,37 @@
       top: 18px;
       height: fit-content;
     }
+
     .panel h2 {
       font-size: 18px;
     }
+
     .field {
       display: grid;
       gap: 6px;
       font-size: 14px;
     }
-    .field label { color: var(--muted); }
-    .field input, .field select, .field button {
+
+    .field label {
+      color: var(--muted);
+    }
+
+    .field input,
+    .field select,
+    .field button {
       padding: 10px 12px;
       border-radius: 10px;
       border: 1px solid var(--line);
       background: #fff;
       font-size: 14px;
     }
+
     .field input[type="range"] {
       padding: 0;
       border: none;
       accent-color: var(--accent);
     }
+
     .btn {
       background: var(--accent);
       color: #fff;
@@ -100,7 +148,12 @@
       border: none;
       transition: transform 0.15s ease, opacity 0.2s ease;
     }
-    .btn:hover { transform: translateY(-1px); opacity: 0.9; }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
     .btn.ghost {
       background: transparent;
       border: 1px solid var(--accent);
@@ -111,6 +164,7 @@
       display: grid;
       gap: 16px;
     }
+
     .toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -118,15 +172,18 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .summary {
       font-size: 14px;
       color: var(--muted);
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 24px;
     }
+
     .card {
       background: var(--card);
       border-radius: 14px;
@@ -135,6 +192,7 @@
       display: grid;
       text-align: center;
     }
+
     .card img {
       width: 100%;
       height: 240px;
@@ -142,12 +200,17 @@
       background: #fff;
       padding: 16px;
     }
+
     .card-body {
       padding: 14px;
       display: grid;
       gap: 6px;
     }
-    .card h3 { font-size: 18px; }
+
+    .card h3 {
+      font-size: 18px;
+    }
+
     .meta {
       font-size: 13px;
       color: var(--muted);
@@ -156,11 +219,13 @@
       flex-wrap: wrap;
       justify-content: center;
     }
+
     .price {
       font-size: 18px;
       color: var(--accent);
       font-weight: 700;
     }
+
     .pill {
       display: inline-block;
       padding: 2px 8px;
@@ -169,13 +234,23 @@
       font-size: 12px;
       color: var(--muted);
     }
-    .stock.ok { color: var(--ok); font-weight: 600; }
-    .stock.no { color: var(--warn); font-weight: 600; }
+
+    .stock.ok {
+      color: var(--ok);
+      font-weight: 600;
+    }
+
+    .stock.no {
+      color: var(--warn);
+      font-weight: 600;
+    }
+
     .card .btn {
       margin: 8px auto 0;
       padding: 8px 14px;
       border-radius: 8px;
     }
+
     .empty {
       padding: 24px;
       border: 1px dashed var(--line);
@@ -194,17 +269,22 @@
       z-index: 999;
       padding: 20px;
     }
-    .modal.active { display: grid; }
+
+    .modal.active {
+      display: grid;
+    }
+
     .modal-card {
       background: #fff;
       border-radius: 14px;
       max-width: 760px;
       width: 100%;
       overflow: hidden;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
       display: grid;
       grid-template-columns: 1.1fr 1fr;
     }
+
     .modal-card img {
       width: 100%;
       height: 100%;
@@ -212,13 +292,22 @@
       background: #faf6f0;
       padding: 20px;
     }
+
     .modal-body {
       padding: 20px;
       display: grid;
       gap: 10px;
     }
-    .modal-title { font-size: 22px; }
-    .modal-desc { color: var(--muted); font-size: 14px; }
+
+    .modal-title {
+      font-size: 22px;
+    }
+
+    .modal-desc {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
     .modal-close {
       border: none;
       background: transparent;
@@ -226,6 +315,7 @@
       cursor: pointer;
       justify-self: end;
     }
+
     .detail-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -244,44 +334,66 @@
     }
 
     @media (max-width: 1050px) {
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
+
     @media (max-width: 900px) {
-      header { padding: 16px 20px; }
-      .layout { grid-template-columns: 1fr; }
-      .panel { position: static; }
-      .grid { grid-template-columns: 1fr; }
-      .modal-card { grid-template-columns: 1fr; }
+      header {
+        padding: 16px 20px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        position: static;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-card {
+        grid-template-columns: 1fr;
+      }
     }
 
     .login-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: #ffffff;
       display: grid;
       place-items: center;
       z-index: 1000;
       padding: 20px;
+      backdrop-filter: blur(10px);
     }
+
     .login-card {
       background: #fff;
       border-radius: 12px;
       padding: 22px;
       width: min(360px, 90vw);
-      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
       display: grid;
       gap: 10px;
     }
+
     .login-card h2 {
       font-size: 20px;
       margin-bottom: 6px;
     }
+
     .login-card input {
       padding: 10px 12px;
       border-radius: 10px;
       border: 1px solid var(--line);
       font-size: 14px;
     }
+
     .login-tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -290,6 +402,7 @@
       padding: 4px;
       gap: 4px;
     }
+
     .login-tab {
       border: none;
       background: transparent;
@@ -300,42 +413,51 @@
       color: var(--muted);
       transition: background 0.2s ease, color 0.2s ease;
     }
+
     .login-tab.active {
       background: #fff;
       color: var(--accent);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
+
     .auth-panel {
       display: grid;
       gap: 10px;
     }
+
     .auth-panel[hidden] {
       display: none;
     }
+
     .login-note {
       font-size: 12px;
       color: var(--muted);
     }
+
     .login-divider {
       height: 1px;
       background: var(--line);
       margin: 4px 0;
     }
+
     .login-checks {
       display: grid;
       gap: 8px;
       font-size: 13px;
       color: var(--muted);
     }
+
     .login-checks label {
       display: flex;
       gap: 8px;
       align-items: flex-start;
     }
+
     .login-checks input[type="checkbox"] {
       margin-top: 3px;
       accent-color: var(--accent);
     }
+
     .login-error {
       color: var(--warn);
       font-size: 12px;
@@ -356,11 +478,18 @@
       opacity: 0;
       transition: transform 0.25s ease, opacity 0.25s ease;
     }
+
     .cart.open {
       transform: translateX(0);
       opacity: 1;
     }
-    .cart h3 { font-size: 16px; margin-bottom: 10px; color: var(--accent); }
+
+    .cart h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
     .cart-item {
       display: flex;
       justify-content: space-between;
@@ -368,6 +497,7 @@
       font-size: 13px;
       margin-bottom: 8px;
     }
+
     .cart-item button {
       border: none;
       background: var(--warn);
@@ -376,6 +506,7 @@
       padding: 4px 8px;
       cursor: pointer;
     }
+
     .cart-item .cart-link {
       background: transparent;
       border: none;
@@ -388,6 +519,306 @@
       text-decoration: underline;
     }
 
+    /* ------------------------------------clientecss---------------------------------------------------------------------------------------- */
+    .profile {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      border-radius: 0;
+      box-shadow: var(--shadow);
+      padding: 32px 48px;
+      z-index: 901;
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      overflow: auto;
+      background: #f8f9fb;
+      box-sizing: border-box;
+    }
+
+    .profile.open {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .profile-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e6e8ec;
+    }
+
+    .profile-head h3 {
+      font-size: 22px;
+      margin: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .profile-close {
+      border: none;
+      background: #f1f3f5;
+      border-radius: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      color: #333;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .profile-close:hover {
+      background: #e2e5e9;
+    }
+
+    /* Layout de dos columnas */
+    .profile-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .profile-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .profile-section {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .profile-section h4 {
+      margin: 0 0 14px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a2e;
+      border-bottom: 1px solid #eef0f2;
+      padding-bottom: 10px;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 10px 16px;
+      font-size: 14px;
+      color: #2e2e2e;
+    }
+
+    .profile-grid .muted {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .profile-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .profile-form input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #e6e8ec;
+      border-radius: 10px;
+      outline: none;
+      font-size: 14px;
+      box-sizing: border-box;
+      background: #fafbfc;
+    }
+
+    .profile-form input:focus {
+      border-color: var(--accent);
+      background: #fff;
+    }
+
+    .profile-form .profile-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .profile-msg {
+      min-height: 16px;
+      font-size: 12px;
+      color: var(--warn);
+    }
+
+    .profile-list {
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+      color: #2e2e2e;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .profile-item {
+      padding: 10px 14px;
+      border: 1px solid #eef0f2;
+      border-radius: 10px;
+      background: #fafbfc;
+      display: grid;
+      gap: 4px;
+    }
+
+    .profile-item strong {
+      font-size: 13px;
+    }
+
+    .profile-item .meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* --------------------------------------------admincss---------------------------------------------------------------------------------------- */
+    .admin-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      border-radius: 0;
+      padding: 32px 48px;
+      z-index: 901;
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      overflow: auto;
+      background: #f8f9fb;
+      box-sizing: border-box;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .admin-panel.open {
+      transform: translateX(0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+
+    .admin-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e6e8ec;
+    }
+
+    .admin-head h3 {
+      font-size: 22px;
+      margin: 0;
+      color: #e53935;
+      font-weight: 700;
+    }
+
+    .admin-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .admin-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: #f1f3f5;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #888;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .admin-list {
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .admin-item {
+      padding: 10px 14px;
+      border: 1px solid #eef0f2;
+      border-radius: 10px;
+      background: #fafbfc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .admin-item-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-edit {
+      background: #e3f2fd;
+      color: #1565c0;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .btn-delete {
+      background: #ffebee;
+      color: #c62828;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .btn-status {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    #adminSalesChart,
+    #adminUsersChart {
+      margin-top: 8px;
+      max-height: 200px;
+    }
+
+    /* ------------------------------------------------------------------------------------------------------------------------------------------------ */
     .checkout-overlay {
       position: fixed;
       inset: 0;
@@ -397,18 +828,23 @@
       z-index: 1200;
       padding: 20px;
     }
-    .checkout-overlay.active { display: grid; }
+
+    .checkout-overlay.active {
+      display: grid;
+    }
+
     .checkout-card {
       width: min(860px, 96vw);
       max-height: 92vh;
       overflow: auto;
       background: #fff;
       border-radius: 14px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
       padding: 18px;
       display: grid;
       gap: 14px;
     }
+
     .checkout-head {
       display: flex;
       justify-content: space-between;
@@ -416,15 +852,18 @@
       border-bottom: 1px solid var(--line);
       padding-bottom: 10px;
     }
+
     .checkout-head h3 {
       color: var(--accent-dark);
       font-size: 22px;
     }
+
     .checkout-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+
     .checkout-section {
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -433,10 +872,12 @@
       gap: 8px;
       background: #fbfcff;
     }
+
     .checkout-section h4 {
       font-size: 15px;
       color: var(--accent-dark);
     }
+
     .checkout-section input,
     .checkout-section select {
       padding: 9px 10px;
@@ -445,11 +886,13 @@
       font-size: 14px;
       width: 100%;
     }
+
     .checkout-list {
       display: grid;
       gap: 6px;
       font-size: 13px;
     }
+
     .checkout-item {
       display: flex;
       justify-content: space-between;
@@ -459,10 +902,12 @@
       border-radius: 8px;
       background: #fff;
     }
+
     .checkout-item.active {
       border-color: var(--accent);
       background: #f2f6ff;
     }
+
     .checkout-total {
       display: flex;
       justify-content: space-between;
@@ -472,23 +917,28 @@
       padding-top: 8px;
       margin-top: 4px;
     }
+
     .checkout-actions {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
     }
+
     .checkout-msg {
       min-height: 18px;
       color: var(--warn);
       font-size: 13px;
     }
+
     .checkout-success {
       color: var(--ok);
       font-weight: 600;
     }
 
     @media (max-width: 900px) {
-      .checkout-grid { grid-template-columns: 1fr; }
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .popup {
@@ -507,33 +957,78 @@
       transition: opacity 0.2s ease, transform 0.2s ease;
       pointer-events: none;
     }
+
     .popup.show {
       opacity: 1;
       transform: translateY(0);
     }
+
+    .login-role {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 8px 0 2px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .login-role-label {
+      color: #2e2e2e;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .login-role-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .login-role-option input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--primary);
+    }
   </style>
 </head>
+
 <body>
   <div id="loginOverlay" class="login-overlay" role="dialog" aria-modal="true">
     <div class="login-card" role="document">
-      <div class="login-tabs" role="tablist" aria-label="Autenticación">
-        <button id="tabLogin" class="login-tab active" role="tab" aria-selected="true" aria-controls="panelLogin">Iniciar sesión</button>
-        <button id="tabSignup" class="login-tab" role="tab" aria-selected="false" aria-controls="panelSignup">Crear cuenta</button>
+      <div class="login-tabs" role="tablist" aria-label="AutenticaciÃ³n">
+        <button id="tabLogin" class="login-tab active" role="tab" aria-selected="true"
+          aria-controls="panelLogin">Iniciar sesión</button>
+        <button id="tabSignup" class="login-tab" role="tab" aria-selected="false" aria-controls="panelSignup">Crear
+          cuenta</button>
       </div>
 
       <form id="loginForm" class="auth-panel" role="tabpanel" aria-labelledby="tabLogin">
-        <h2>Iniciar sesión</h2>
-        <p class="login-note">Accede con tus datos para continuar.</p>
-        <input id="loginUser" type="text" placeholder="Usuario o email" required>
-        <input id="loginPass" type="password" placeholder="Contraseña" required>
+        <h2>Iniciar sessió</h2>
+        <p class="login-note">Accedeix amb les teves dades per continuar.</p>
+        <div class="login-role" aria-label="Tipus d'usuari">
+          <span class="login-role-label">Tipus d'usuari</span>
+          <label class="login-role-option">
+            <input id="loginRoleClient" type="radio" name="loginRole" value="client" checked>
+            <span>Client</span>
+          </label>
+          <label class="login-role-option">
+            <input id="loginRoleAdmin" type="radio" name="loginRole" value="admin">
+            <span>Administrador</span>
+          </label>
+        </div>
+        <input id="loginUser" type="text" placeholder="Usuari o correu" required>
+        <input id="loginPass" type="password" placeholder="Contrasenya" required>
         <div class="login-checks">
           <label>
             <input id="acceptPrivacy" type="checkbox" required>
-            <span>Acepto la política de privacidad.</span>
+            <span>Accepto la política de privadesa.</span>
           </label>
           <label>
             <input id="acceptAds" type="checkbox">
-            <span>Acepto recibir publicidad y comunicaciones comerciales.</span>
+            <span>Accepto rebre publicitat i comunicacions comercials.</span>
           </label>
         </div>
         <div id="loginError" class="login-error" aria-live="polite"></div>
@@ -541,23 +1036,23 @@
       </form>
 
       <form id="signupForm" class="auth-panel" role="tabpanel" aria-labelledby="tabSignup" hidden>
-        <h2>Crear cuenta</h2>
-        <p class="login-note">Nuevo usuario. Completa el registro para empezar.</p>
-        <input id="signupName" type="text" placeholder="Nombre completo" required>
-        <input id="signupEmail" type="email" placeholder="Email" required>
-        <input id="signupPass" type="password" placeholder="Contraseña" required>
+        <h2>Crear compte</h2>
+        <p class="login-note">Nou usuari. Completa el registre per començar.</p>
+        <input id="signupName" type="text" placeholder="Nom complet" required>
+        <input id="signupEmail" type="email" placeholder="Correu electrònic" required>
+        <input id="signupPass" type="password" placeholder="Contrasenya" required>
         <div class="login-checks">
           <label>
             <input id="signupPrivacy" type="checkbox" required>
-            <span>Acepto la política de privacidad.</span>
+            <span>Accepto la política de privadesa.</span>
           </label>
           <label>
             <input id="signupAds" type="checkbox">
-            <span>Acepto recibir publicidad y comunicaciones comerciales.</span>
+            <span>Accepto rebre publicitat i comunicacions comercials.</span>
           </label>
         </div>
         <div id="signupError" class="login-error" aria-live="polite"></div>
-        <button class="btn" type="submit">Crear cuenta</button>
+        <button class="btn" type="submit">Crear compte</button>
       </form>
     </div>
   </div>
@@ -567,6 +1062,8 @@
       <h1>PRO FOOTBALL BOOTS</h1>
     </div>
     <div class="header-actions">
+      <button id="logoutBtn" class="btn logout-btn" hidden>Sortir</button>
+      <button id="openProfile" class="btn profile-btn" hidden>Perfil</button>
       <button id="openCart" class="btn cart-btn">Cistella</button>
     </div>
   </header>
@@ -638,6 +1135,143 @@
     <h3>La teva cistella</h3>
     <div id="cartItems">Cistella buida</div>
   </div>
+  <!----------------------------------------------------------------------------------------------------------------------------->
+
+  <div id="profile" class="profile" aria-live="polite">
+    <div class="profile-head">
+      <h3>Perfil d'usuari</h3>
+      <button id="closeProfile" class="profile-close" type="button">✕</button>
+    </div>
+
+    <div class="profile-body">
+      <div class="profile-section">
+        <h4>Dades personals</h4>
+        <div class="profile-grid">
+          <div class="muted">Nom</div>
+          <div id="profileDisplayName">-</div>
+          <div class="muted">Correu</div>
+          <div id="profileDisplayEmail">-</div>
+          <div class="muted">Rol</div>
+          <div id="profileDisplayRole">-</div>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h4>Editar nom, correu, contrasenya</h4>
+        <form id="profileForm" class="profile-form">
+          <input id="profileNameInput" type="text" placeholder="Nom" autocomplete="name">
+          <input id="profileEmailInput" type="email" placeholder="Correu" autocomplete="email">
+          <input id="profilePasswordInput" type="password" placeholder="Nova contrasenya" autocomplete="new-password">
+          <div id="profileMsg" class="profile-msg" aria-live="polite"></div>
+          <div class="profile-actions">
+            <button class="btn" type="submit">Desar canvis</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="profile-section">
+        <h4>Llista d'inicis de sessió</h4>
+        <div id="profileLogins" class="profile-list">
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h4>Últimes 5 compres</h4>
+        <div id="profileOrders" class="profile-list"></div>
+      </div>
+    </div>
+  </div>
+  <!----------------------------------------------ADMIN------------------------------------------------------------------------------->
+  <div id="adminPanel" class="admin-panel" aria-live="polite">
+    <div class="admin-head">
+      <h3>Plafó d'administració</h3>
+      <button id="closeAdmin" class="profile-close" type="button">✕</button>
+    </div>
+
+    <div class="admin-body">
+
+      <!-- Columna izquierda -->
+      <div class="admin-col">
+
+        <!-- Stats -->
+        <div class="profile-section">
+          <h4>Tauler de control</h4>
+          <div class="admin-stats">
+            <div class="stat-card">
+              <span class="stat-label">Vendes totals</span>
+              <span class="stat-value" id="statVentas">€0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Usuaris</span>
+              <span class="stat-value" id="statUsuarios">0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Comandes</span>
+              <span class="stat-value" id="statPedidos">0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Productes</span>
+              <span class="stat-value" id="statProductos">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gestión usuarios -->
+        <div class="profile-section">
+          <h4>Gestió d'usuaris</h4>
+          <div id="adminUserList" class="admin-list">
+            <div class="profile-item"><span class="meta">Carregant usuaris...</span></div>
+          </div>
+        </div>
+
+        <!-- Gestión pedidos -->
+        <div class="profile-section">
+          <h4>Gestió de comandes</h4>
+          <div id="adminOrderList" class="admin-list">
+            <div class="profile-item"><span class="meta">Encara no hi ha comandes.</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="admin-col">
+
+        <!-- Gestión productos -->
+        <div class="profile-section">
+          <h4>Gestió de productes</h4>
+          <form id="adminProductForm" class="profile-form">
+            <input id="adminProdName" type="text" placeholder="Nom del producte">
+            <input id="adminProdPrice" type="number" placeholder="Preu (€)">
+            <input id="adminProdStock" type="number" placeholder="Estoc">
+            <input id="adminProdImage" type="text" placeholder="URL de la imatge">
+            <div class="profile-actions">
+              <button class="btn" type="submit">Afegir producte</button>
+            </div>
+          </form>
+          <div id="adminProductList" class="admin-list" style="margin-top:12px">
+            <div class="profile-item"><span class="meta">Encara no hi ha productes.</span></div>
+          </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="profile-section">
+          <h4>Vendes per mes</h4>
+          <canvas id="adminSalesChart" height="120"></canvas>
+        </div>
+
+        <div class="profile-section">
+          <h4>Productes més venuts</h4>
+          <div style="max-width: 360px; width: 100%; min-height: 280px; margin: 0 auto;">
+            <canvas id="adminProductsChart" style="display: block; width: 100%; height: 320px;"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!----------------------------------------------------------------------------------------------------------------------------->
 
   <div id="checkoutOverlay" class="checkout-overlay" aria-modal="true" role="dialog">
     <div class="checkout-card" role="document">
@@ -699,7 +1333,7 @@
   <div id="popup" class="popup">El producte s'ha afegit correctament a la cistella</div>
 
   <footer>
-    © 2026 Pro Football Boots - Tienda profesional
+    Â© 2026 Pro Football Boots - Tienda profesional
   </footer>
 
   <script>
@@ -712,7 +1346,7 @@
         price: 189.99,
         stock: 25,
         featured: true,
-        image: "./public/botas2.jpg",
+        image: "/botas2.jpg",
         description: "Bota ultra lleugera per velocitat i acceleracio."
       },
       {
@@ -723,7 +1357,7 @@
         price: 120.99,
         stock: 15,
         featured: true,
-        image: "./public/nikep2.png",
+        image: "/nikep2.png",
         description: "Pensada per a control i passada precisa."
       },
       {
@@ -734,7 +1368,7 @@
         price: 110.5,
         stock: 20,
         featured: true,
-        image: "./public/bota1.jpg",
+        image: "/bota1.jpg",
         description: "Superficie de grip per xuts amb efecte."
       },
       {
@@ -745,7 +1379,7 @@
         price: 105.75,
         stock: 10,
         featured: false,
-        image: "./public/pumap4.png",
+        image: "/pumap4.png",
         description: "Ajust elastic per canvis de direccio."
       },
       {
@@ -756,7 +1390,7 @@
         price: 199.99,
         stock: 18,
         featured: true,
-        image: "./public/nikep4.png",
+        image: "/nikep4.png",
         description: "Maxima velocitat amb placa reactiva."
       },
       {
@@ -767,7 +1401,7 @@
         price: 189.99,
         stock: 9,
         featured: true,
-        image: "./public/adidasp6.png",
+        image: "/adidasp6.png",
         description: "Control extra amb ajust comode i lleuger."
       },
       {
@@ -778,7 +1412,7 @@
         price: 179.99,
         stock: 12,
         featured: false,
-        image: "./public/pumap7.png",
+        image: "/pumap7.png",
         description: "Flexibilitat i tacte suau per a mes precisio."
       },
       {
@@ -789,7 +1423,7 @@
         price: 209.99,
         stock: 6,
         featured: true,
-        image: "./public/adidasp8.png",
+        image: "/adidasp8.png",
         description: "Tacte classic amb materials moderns."
       },
       {
@@ -800,10 +1434,18 @@
         price: 169.99,
         stock: 14,
         featured: false,
-        image: "./public/pumap9.png",
+        image: "/pumap9.png",
         description: "Pensada per a jugadors rapids."
       }
     ];
+
+    const imagesByName = new Map(
+      products
+        .filter((p) => p && typeof p.name === "string" && typeof p.image === "string")
+        .map((p) => [p.name.trim().toLowerCase(), p.image])
+    );
+
+    const fallbackImages = products.map((p) => p.image).filter(Boolean);
 
     const grid = document.getElementById("grid");
     const empty = document.getElementById("empty");
@@ -836,6 +1478,8 @@
     const tabSignup = document.getElementById("tabSignup");
     const loginUser = document.getElementById("loginUser");
     const loginPass = document.getElementById("loginPass");
+    const loginRoleClient = document.getElementById("loginRoleClient");
+    const loginRoleAdmin = document.getElementById("loginRoleAdmin");
     const acceptPrivacy = document.getElementById("acceptPrivacy");
     const acceptAds = document.getElementById("acceptAds");
     const loginError = document.getElementById("loginError");
@@ -848,6 +1492,20 @@
     const cart = document.getElementById("cart");
     const cartItems = document.getElementById("cartItems");
     const openCart = document.getElementById("openCart");
+    const openProfile = document.getElementById("openProfile");
+    const profile = document.getElementById("profile");
+    const closeProfile = document.getElementById("closeProfile");
+    const profileDisplayName = document.getElementById("profileDisplayName");
+    const profileDisplayEmail = document.getElementById("profileDisplayEmail");
+    const profileDisplayRole = document.getElementById("profileDisplayRole");
+    const profileForm = document.getElementById("profileForm");
+    const profileNameInput = document.getElementById("profileNameInput");
+    const profileEmailInput = document.getElementById("profileEmailInput");
+    const profilePasswordInput = document.getElementById("profilePasswordInput");
+    const profileMsg = document.getElementById("profileMsg");
+    const profileOrders = document.getElementById("profileOrders");
+    const profileLogins = document.getElementById("profileLogins");
+    const logoutBtn = document.getElementById("logoutBtn");
     const popup = document.getElementById("popup");
     const checkoutOverlay = document.getElementById("checkoutOverlay");
     const closeCheckout = document.getElementById("closeCheckout");
@@ -862,9 +1520,220 @@
     const coShipping = document.getElementById("coShipping");
     const coPayment = document.getElementById("coPayment");
     const coCard = document.getElementById("coCard");
+    const adminSalesCtx = document.getElementById('adminSalesChart');
+    const adminProductsCtx = document.getElementById('adminProductsChart');
+    let adminSalesChart = null;
+    let adminProductsChart = null;
+    const adminProductChartColors = [
+      '#003f5c',
+      '#2f4b7c',
+      '#665191',
+      '#a05195',
+      '#d45087',
+      '#f95d6a',
+      '#ff7c43',
+      '#ffa600',
+      '#8ac926'
+    ];
     let cartState = [];
     let currentProduct = null;
     let selectedCartIndex = -1;
+
+    function getOrderDate(order) {
+      const possible = order && (order.createdAt || order.data || order.date || order.fecha || order.updatedAt || order.created_at || order.dataCreacio || order.data_creacio);
+      if (!possible) return null;
+      const date = new Date(possible);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function getOrderTotal(order) {
+      return Number(order.import_total || order.total || order.amount || order.totalAmount || order.importe || order.preu_total || order.importTotal || order.subtotal || 0) || 0;
+    }
+
+    function getOrderItems(order) {
+      if (!order) return [];
+      if (Array.isArray(order.detall_comanda)) return order.detall_comanda;
+      if (Array.isArray(order.items)) return order.items;
+      if (Array.isArray(order.line_items)) return order.line_items;
+      return [];
+    }
+
+    function getProductNameById(productId) {
+      const normalizedId = String(productId || '').trim();
+      const match = allProducts.find((p) => String(p.id || p._id || '').trim() === normalizedId);
+      return match ? match.name : normalizedId;
+    }
+
+    function getProductItemId(item) {
+      if (!item) return '';
+      if (item.id_producte) {
+        if (typeof item.id_producte === 'string') return item.id_producte;
+        if (typeof item.id_producte === 'object') {
+          return String(item.id_producte._id || item.id_producte.id || item.id_producte).trim();
+        }
+      }
+      if (item.productId) return String(item.productId).trim();
+      if (item.product_id) return String(item.product_id).trim();
+      if (item.product) return String(item.product).trim();
+      return '';
+    }
+
+    function buildMonthSales(orders) {
+      const monthLabels = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
+      const monthTotals = Array(12).fill(0);
+      orders.forEach((order) => {
+        const date = getOrderDate(order);
+        if (!date) return;
+        const monthIndex = date.getMonth();
+        monthTotals[monthIndex] += getOrderTotal(order);
+      });
+      return { labels: monthLabels, totals: monthTotals };
+    }
+
+    function buildProductSales(orders) {
+      const salesMap = new Map();
+      orders.forEach((order) => {
+        const items = getOrderItems(order);
+        items.forEach((item) => {
+          const prodId = getProductItemId(item);
+          const qty = Number(item.quantitat || item.quantity || item.qty || item.cantidad || item.quantityOrdered || 0) || 0;
+          if (!prodId || qty <= 0) return;
+          salesMap.set(prodId, (salesMap.get(prodId) || 0) + qty);
+        });
+      });
+
+      const productStats = allProducts.map((product) => {
+        const id = String(product.id || product._id || '').trim();
+        return {
+          label: product.name || 'Sense nom',
+          count: salesMap.get(id) || 0
+        };
+      });
+
+      return {
+        labels: productStats.map((item) => item.label),
+        data: productStats.map((item) => item.count),
+        fallback: productStats.every((item) => item.count === 0)
+      };
+    }
+
+    function createAdminSalesChart(labels, data) {
+      if (!adminSalesCtx) return;
+      if (typeof Chart === 'undefined') {
+        console.error('Chart.js no está cargado');
+        return;
+      }
+      if (adminSalesChart) adminSalesChart.destroy();
+      adminSalesChart = new Chart(adminSalesCtx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Vendes',
+            data,
+            backgroundColor: labels.map((_, index) => [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(255, 159, 64, 0.2)',
+              'rgba(255, 205, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(201, 203, 207, 0.2)',
+              'rgba(38, 166, 91, 0.2)',
+              'rgba(233, 30, 99, 0.2)',
+              'rgba(3, 169, 244, 0.2)',
+              'rgba(255, 87, 34, 0.2)',
+              'rgba(156, 39, 176, 0.2)'
+            ][index % 12]),
+            borderColor: labels.map((_, index) => [
+              'rgb(255, 99, 132)',
+              'rgb(255, 159, 64)',
+              'rgb(255, 205, 86)',
+              'rgb(75, 192, 192)',
+              'rgb(54, 162, 235)',
+              'rgb(153, 102, 255)',
+              'rgb(201, 203, 207)',
+              'rgb(38, 166, 91)',
+              'rgb(233, 30, 99)',
+              'rgb(3, 169, 244)',
+              'rgb(255, 87, 34)',
+              'rgb(156, 39, 176)'
+            ][index % 12]),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: (value) => `€${value}`
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `€${context.parsed.y.toFixed(2)}`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function createAdminProductsChart(labels, data) {
+      if (!adminProductsCtx) return;
+      if (typeof Chart === 'undefined') {
+        console.error('Chart.js no está cargado');
+        return;
+      }
+      if (adminProductsChart) adminProductsChart.destroy();
+      adminProductsChart = new Chart(adminProductsCtx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Productes més venuts',
+            data,
+            backgroundColor: labels.map((_, index) => adminProductChartColors[index % adminProductChartColors.length]),
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '55%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                boxWidth: 12,
+                padding: 10,
+                usePointStyle: true
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `${context.label}: ${context.parsed}`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateAdminCharts(orders) {
+      const monthData = buildMonthSales(orders);
+      createAdminSalesChart(monthData.labels, monthData.totals);
+      const productData = buildProductSales(orders);
+      createAdminProductsChart(productData.labels, productData.data);
+    }
 
     function uniqueValues(items, key) {
       const set = new Set();
@@ -1016,7 +1885,7 @@
         const response = await fetch(`${API_BASE}/products`);
         if (!response.ok) throw new Error("No response");
         const data = await response.json();
-        return data.map((p) => ({
+        return data.map((p, index) => ({
           id: p._id || p.id,
           name: p.name || "Sense nom",
           brand: p.brand || "Nike",
@@ -1025,7 +1894,11 @@
           stock: Number(p.stock || 0),
           active: p.active !== false,
           featured: false,
-          image: "./public/bota1.jpg",
+          image:
+            (typeof p.image === "string" && p.image.trim()) ||
+            imagesByName.get(String(p.name || "").trim().toLowerCase()) ||
+            fallbackImages[index % fallbackImages.length] ||
+            "/bota1.jpg",
           description: p.description || ""
         }));
       } catch (err) {
@@ -1183,6 +2056,243 @@
       document.body.style.overflow = lock ? "hidden" : "";
     }
 
+    function storeAuthSession(authResponse) {
+      const accessToken = authResponse && authResponse.accessToken;
+      const refreshToken = authResponse && authResponse.refreshToken;
+      const user = authResponse && authResponse.user;
+
+      if (typeof accessToken === "string" && accessToken.length > 0) {
+        localStorage.setItem("token", accessToken);
+      }
+      if (typeof refreshToken === "string" && refreshToken.length > 0) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
+      if (user && typeof user === "object") {
+        if (typeof user.id === "string" && user.id.length > 0) {
+          localStorage.setItem("userId", user.id);
+        }
+        if (typeof user.email === "string" && user.email.length > 0) {
+          localStorage.setItem("userEmail", user.email);
+        }
+        if (typeof user.name === "string" && user.name.length > 0) {
+          localStorage.setItem("userName", user.name);
+        }
+        if (typeof user.role === "string" && user.role.length > 0) {
+          localStorage.setItem("userRole", user.role);
+        }
+      }
+    }
+
+    function clearAuthSession() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("userRole");
+    }
+
+    function getStoredUserRole() {
+      return (localStorage.getItem("userRole") || "").trim().toLowerCase();
+    }
+
+    function getStoredUserId() {
+      return (localStorage.getItem("userId") || "").trim();
+    }
+
+    function getLoginHistoryKey() {
+      const userId = getStoredUserId();
+      return userId ? `loginHistory:${userId}` : "loginHistory:anonymous";
+    }
+
+    function recordLoginEvent(authResponse) {
+      const user = authResponse && authResponse.user;
+      const role = user && user.role ? String(user.role) : getSelectedAuthRole();
+      const email = user && user.email ? String(user.email) : (loginUser && loginUser.value ? loginUser.value.trim() : "");
+      const name = user && user.name ? String(user.name) : (localStorage.getItem("userName") || "");
+      const entry = {
+        ts: Date.now(),
+        role,
+        email,
+        name
+      };
+
+      const key = getLoginHistoryKey();
+      const existing = JSON.parse(localStorage.getItem(key) || "[]");
+      const next = Array.isArray(existing) ? [entry, ...existing].slice(0, 25) : [entry];
+      localStorage.setItem(key, JSON.stringify(next));
+    }
+
+    function formatDateTime(ts) {
+      try {
+        return new Date(ts).toLocaleString();
+      } catch {
+        return String(ts);
+      }
+    }
+
+    function renderLoginHistory() {
+      const key = getLoginHistoryKey();
+      const existing = JSON.parse(localStorage.getItem(key) || "[]");
+      const items = Array.isArray(existing) ? existing : [];
+      if (!profileLogins) return;
+
+      if (items.length === 0) {
+        profileLogins.innerHTML = `<div class="profile-item"><span class="meta">...</span></div>`;
+        return;
+      }
+
+      profileLogins.innerHTML = items
+        .map((item) => {
+          const when = formatDateTime(item.ts);
+          const role = item.role ? String(item.role) : "-";
+          const email = item.email ? String(item.email) : "-";
+          return `
+            <div class="profile-item">
+              <strong>${when}</strong>
+              <div class="meta">${email} · ${role}</div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function applyAuthFromStorage() {
+      const token = localStorage.getItem("token");
+      const hasToken = typeof token === "string" && token.length > 0;
+      logoutBtn.hidden = !hasToken;
+      if (openProfile) {
+        const role = getStoredUserRole();
+        openProfile.hidden = !hasToken;
+      }
+      loginOverlay.style.display = hasToken ? "none" : "grid";
+      lockScroll(!hasToken);
+      if ((!hasToken || getStoredUserRole() !== "client") && profile) {
+        profile.classList.remove("open");
+      }
+    }
+
+    function setProfileMessage(message, isOk) {
+      if (!profileMsg) return;
+      profileMsg.textContent = message || "";
+      profileMsg.style.color = isOk ? "var(--ok)" : "var(--warn)";
+    }
+
+    function renderProfilePersonal({ name, email, role }) {
+      if (profileDisplayName) profileDisplayName.textContent = name || "-";
+      if (profileDisplayEmail) profileDisplayEmail.textContent = email || "-";
+      if (profileDisplayRole) profileDisplayRole.textContent = role || "-";
+
+      if (profileNameInput && typeof profileNameInput.value === "string") {
+        profileNameInput.value = name || "";
+      }
+      if (profileEmailInput && typeof profileEmailInput.value === "string") {
+        profileEmailInput.value = email || "";
+      }
+      if (profilePasswordInput && typeof profilePasswordInput.value === "string") {
+        profilePasswordInput.value = "";
+      }
+    }
+
+    function getStoredPersonal() {
+      return {
+        name: localStorage.getItem("userName") || "",
+        email: localStorage.getItem("userEmail") || "",
+        role: localStorage.getItem("userRole") || ""
+      };
+    }
+
+    async function refreshPersonalFromApi() {
+      const userId = getStoredUserId();
+      if (!userId) return;
+
+      try {
+        const token = localStorage.getItem("token") || "";
+        const response = await fetch(`${API_BASE}/user/${encodeURIComponent(userId)}`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          }
+        });
+        if (!response.ok) return;
+        const user = await response.json().catch(() => null);
+        if (!user || typeof user !== "object") return;
+
+        if (typeof user.name === "string") localStorage.setItem("userName", user.name);
+        if (typeof user.email === "string") localStorage.setItem("userEmail", user.email);
+        if (typeof user.role === "string") localStorage.setItem("userRole", user.role);
+      } catch {
+        // ignore
+      }
+    }
+
+    function normalizeOrdersResponse(data) {
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.comandes)) return data.comandes;
+      if (data && Array.isArray(data.comandas)) return data.comandas;
+      if (data && Array.isArray(data.orders)) return data.orders;
+      if (data && Array.isArray(data.items)) return data.items;
+      return [];
+    }
+
+    function renderOrders(orders) {
+      if (!profileOrders) return;
+      if (!Array.isArray(orders) || orders.length === 0) {
+        profileOrders.innerHTML = `<div class="profile-item"><span class="meta">No hi ha compres.</span></div>`;
+        return;
+      }
+
+      profileOrders.innerHTML = orders
+        .slice(0, 5)
+        .map((order) => {
+          const id = order && (order._id || order.id || order.orderId || order.comandaId || "");
+          const status = order && (order.status || order.estado || order.state || "");
+          const total = order && (order.total || order.amount || order.totalAmount || order.importe || order.preu_total || order.import_total);
+          const createdAt = order && (order.createdAt || order.data || order.date || order.fecha || order.updatedAt);
+          const totalStr = typeof total === "number" ? total.toFixed(2) : (total ? String(total) : "-");
+          const dateStr = createdAt ? formatDateTime(createdAt) : "-";
+          const title = id ? `Compra ${String(id).slice(-8)}` : "Compra";
+          const meta = `${dateStr}${status ? " · " + status : ""}`;
+          return `
+            <div class="profile-item">
+              <strong>${title}</strong>
+              <div class="meta">${meta}</div>
+              <div>Total: ${totalStr}</div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    async function loadOrdersForUser() {
+      const userId = getStoredUserId();
+      if (!userId) {
+        renderOrders([]);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/comanda?userId=${encodeURIComponent(userId)}`);
+        if (!response.ok) {
+          renderOrders([]);
+          return;
+        }
+        const data = await response.json().catch(() => null);
+        renderOrders(normalizeOrdersResponse(data));
+      } catch {
+        renderOrders([]);
+      }
+    }
+
+    async function loadProfilePanel() {
+      setProfileMessage("", false);
+      renderProfilePersonal(getStoredPersonal());
+      await refreshPersonalFromApi();
+      renderProfilePersonal(getStoredPersonal());
+      await loadOrdersForUser();
+      renderLoginHistory();
+    }
+
     function setAuthTab(tab) {
       const isLogin = tab === "login";
       tabLogin.classList.toggle("active", isLogin);
@@ -1198,74 +2308,199 @@
     tabLogin.addEventListener("click", () => setAuthTab("login"));
     tabSignup.addEventListener("click", () => setAuthTab("signup"));
 
+    function getSelectedAuthRole() {
+      if (loginRoleAdmin && loginRoleAdmin.checked) return "admin";
+      return "client";
+    }
+
+    function applyAuthRoleUi() {
+      tabSignup.hidden = false;
+    }
+
+    if (loginRoleClient) loginRoleClient.addEventListener("change", applyAuthRoleUi);
+    if (loginRoleAdmin) loginRoleAdmin.addEventListener("change", applyAuthRoleUi);
+    applyAuthRoleUi();
+
     loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  loginError.textContent = "";
-  if (!acceptPrivacy.checked) {
-    loginError.textContent = "Debes aceptar la pol�tica de privacidad.";
-    return;
-  }
-  try {
-    const response = await fetch("http://127.0.0.1:3000/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user: loginUser.value.trim(),
-        password: loginPass.value,
-        aceptaTerminos: acceptPrivacy.checked,
-        aceptaPublicidad: acceptAds.checked
-      })
-    });
-
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      throw new Error(data.message || "Error en el login");
-    }
-
-    loginOverlay.style.display = "none";
-    lockScroll(false);
-  } catch (err) {
-    loginError.textContent = err.message || "Error en el login";
-  }
-});
-
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  signupError.textContent = "";
-  if (!signupPrivacy.checked) {
-    signupError.textContent = "Debes aceptar la pol�tica de privacidad.";
-    return;
-  }
-  try {
-    const response = await fetch("http://127.0.0.1:3000/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: signupName.value.trim(),
-        email: signupEmail.value.trim(),
-        password: signupPass.value,
-        aceptaTerminos: signupPrivacy.checked,
-        aceptaPublicidad: signupAds.checked
-      })
-    });
-
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      throw new Error(data.message || "Error creando la cuenta");
-    }
-
-    signupForm.reset();
-    setAuthTab("login");
-  } catch (err) {
-    signupError.textContent = err.message || "Error creando la cuenta";
-  }
-});
-
-openCart.addEventListener("click", () => {
-      cart.classList.toggle("open");
-      if (cart.classList.contains("open")) {
-        loadCart();
+      e.preventDefault();
+      loginError.textContent = "";
+      if (!acceptPrivacy.checked) {
+        loginError.textContent = "Debes aceptar la política de privacidad.";
+        return;
       }
+      try {
+        const response = await fetch("http://127.0.0.1:3000/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user: loginUser.value.trim(),
+            password: loginPass.value,
+            role: getSelectedAuthRole(),
+            aceptaTerminos: acceptPrivacy.checked,
+            aceptaPublicidad: acceptAds.checked
+          })
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.message || "Error en el login");
+        }
+
+        const data = await response.json().catch(() => ({}));
+        storeAuthSession(data);
+        recordLoginEvent(data);
+        applyAuthFromStorage();
+      } catch (err) {
+        loginError.textContent = err.message || "Error en el login";
+      }
+    });
+
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      signupError.textContent = "";
+      if (!signupPrivacy.checked) {
+        signupError.textContent = "Debes aceptar la política de privacidad.";
+        return;
+      }
+      try {
+        const response = await fetch("http://127.0.0.1:3000/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: signupName.value.trim(),
+            email: signupEmail.value.trim(),
+            password: signupPass.value,
+            role: getSelectedAuthRole(),
+            aceptaTerminos: signupPrivacy.checked,
+            aceptaPublicidad: signupAds.checked
+          })
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.message || "Error creando la cuenta");
+        }
+
+        signupForm.reset();
+        setAuthTab("login");
+      } catch (err) {
+        signupError.textContent = err.message || "Error creando la cuenta";
+      }
+    });
+
+    if (profileForm) {
+      profileForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        setProfileMessage("", false);
+
+        const userId = getStoredUserId();
+        if (!userId) {
+          setProfileMessage("No hay usuario en sesión.", false);
+          return;
+        }
+
+        const payload = {};
+        const nextName = profileNameInput ? profileNameInput.value.trim() : "";
+        const nextEmail = profileEmailInput ? profileEmailInput.value.trim() : "";
+        const nextPassword = profilePasswordInput ? profilePasswordInput.value : "";
+
+        if (nextName) payload.name = nextName;
+        if (nextEmail) payload.email = nextEmail;
+        if (nextPassword) payload.password = nextPassword;
+
+        if (Object.keys(payload).length === 0) {
+          setProfileMessage("No hay cambios para guardar.", false);
+          return;
+        }
+
+        try {
+          const token = localStorage.getItem("token") || "";
+          const response = await fetch(`${API_BASE}/user/${encodeURIComponent(userId)}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.message || "No se pudieron guardar los cambios");
+          }
+
+          const data = await response.json().catch(() => ({}));
+          const user = data && data.user ? data.user : data;
+          if (user && typeof user === "object") {
+            if (typeof user.name === "string") localStorage.setItem("userName", user.name);
+            if (typeof user.email === "string") localStorage.setItem("userEmail", user.email);
+            if (typeof user.role === "string") localStorage.setItem("userRole", user.role);
+          }
+
+          setProfileMessage("Cambios guardados.", true);
+          await loadProfilePanel();
+        } catch (err) {
+          setProfileMessage(err.message || "Error guardando cambios", false);
+        }
+      });
+    }
+
+    openCart.addEventListener("click", () => {
+      cart.classList.toggle("open");
+      if (profile && profile.classList.contains("open")) {
+        profile.classList.remove("open");
+      }
+      if (cart.classList.contains("open")) {
+        renderCart();
+      }
+    });
+
+    if (openProfile) {
+      openProfile.addEventListener("click", async () => {
+        cart.classList.remove("open");
+        const role = getStoredUserRole();
+        if (role === "admin") {
+          document.getElementById("adminPanel").classList.toggle("open");
+          if (document.getElementById("adminPanel").classList.contains("open")) {
+            await loadAdminPanel();
+          }
+        } else {
+          profile.classList.toggle("open");
+          if (profile.classList.contains("open")) {
+            await loadProfilePanel();
+          }
+        }
+      });
+    }
+
+    if (closeProfile) {
+      closeProfile.addEventListener("click", () => {
+        profile.classList.remove("open");
+      });
+    }
+
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (refreshToken) {
+          await fetch(`${API_BASE}/auth/logout`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken })
+          });
+        }
+      } catch (err) {
+        // ignore: logout should still clear local session
+      }
+
+      clearAuthSession();
+      if (profile) {
+        profile.classList.remove("open");
+      }
+      setAuthTab("login");
+      loginForm.reset();
+      signupForm.reset();
+      applyAuthFromStorage();
     });
 
     coShipping.addEventListener("change", renderCheckoutSummary);
@@ -1280,63 +2515,215 @@ openCart.addEventListener("click", () => {
 
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!cartState.length) {
-        checkoutMessage.textContent = "La cistella esta buida.";
-        checkoutMessage.classList.remove("checkout-success");
-        return;
-      }
-
-      const shippingPrices = { standard: 4.99, express: 9.99, store: 0 };
-      const shippingCost = shippingPrices[coShipping.value] || 0;
-      const subtotal = cartState.reduce((sum, item) => sum + Number(item.price || 0), 0);
-      const total = subtotal + shippingCost;
-
-      const payload = {
-        nombre: coName.value.trim(),
-        email: coEmail.value.trim(),
-        adreca: coAddress.value.trim(),
-        metodeEnviament: coShipping.value,
-        metodePagament: coPayment.value,
-        referenciaPagament: coCard.value.trim(),
-        productes: cartState.map((item) => ({
-          productId: item.id || item.name,
-          nom: item.name,
-          preu: Number(item.price || 0)
-        })),
-        subtotal,
-        costEnviament: shippingCost,
-        total
-      };
+      checkoutMessage.textContent = "Processant el pagament...";
+      checkoutMessage.classList.remove("checkout-success");
 
       try {
-        const response = await fetch("http://127.0.0.1:3000/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+        const productIdMap = {
+          'p1': '672f2a0c9a12b4e3d3b8f1a1',
+          'p2': '672f2a0c9a12b4e3d3b8f1a2',
+          'p3': '672f2a0c9a12b4e3d3b8f1a3',
+          'p4': '672f2a0c9a12b4e3d3b8f1a4',
+          'p5': '672f2a0c9a12b4e3d3b8f1a5',
+          'p6': '672f2a0c9a12b4e3d3b8f1a6',
+          'p7': '672f2a0c9a12b4e3d3b8f1a7',
+          'p8': '672f2a0c9a12b4e3d3b8f1a8',
+          'p9': '672f2a0c9a12b4e3d3b8f1a9'
+        };
+
+        const response = await fetch('http://localhost:3000/api/checkout/create-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (localStorage.getItem('token') || '')
+          },
+          body: JSON.stringify({
+            userId: getStoredUserId(),
+            products: cartState.map(item => {
+              const rawId = String(item.id || item._id || '').trim();
+              const productId = productIdMap[rawId] || rawId;
+              return {
+                id_producte: productId,
+                quantitat: 1
+              };
+            })
+          })
         });
 
         if (!response.ok) {
           const data = await response.json().catch(() => ({}));
-          throw new Error(data.message || "No se pudo guardar el pedido");
+          console.error('API Error:', data);
+          throw new Error(data.message || 'Error al iniciar el pagament');
         }
 
-        checkoutMessage.textContent = "Pedido confirmat i guardat a MongoDB.";
-        checkoutMessage.classList.add("checkout-success");
-        showPopup("Pedido confirmat");
-        cartState = [];
-        renderCart();
-        setTimeout(() => {
-          closeCheckoutModal();
-        }, 1200);
+        const { sessionId } = await response.json();
+        const stripe = Stripe('pk_test_51TLg9P1ng0lLNfBeO5FBzEiNqeoAdYtf3G4PpqARXqDnztKGfyuY5lXmoQUrDYR5vW1c8b0dToGAGoHThzy8q58V00KU6KMHJt');
+        await stripe.redirectToCheckout({ sessionId });
       } catch (err) {
-        checkoutMessage.textContent = err.message || "Error al guardar pedido";
+        console.error('Checkout error:', err);
+        checkoutMessage.textContent = err.message || "Error al iniciar el pagament";
         checkoutMessage.classList.remove("checkout-success");
       }
     });
 
+    applyAuthFromStorage();
     init();
-    lockScroll(true);
+
+    document.getElementById("closeAdmin").addEventListener("click", () => {
+      document.getElementById("adminPanel").classList.remove("open");
+    });
+
+    async function loadAdminPanel() {
+      try {
+        const token = localStorage.getItem("token") || "";
+        const headers = {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        };
+
+        const productsCount = allProducts.length;
+        document.getElementById("statProductos").textContent = productsCount;
+
+        const ordersRes = await fetch(`${API_BASE}/comanda`, { headers });
+        let totalSales = 0;
+        let totalOrders = 0;
+        let orders = [];
+        if (ordersRes.ok) {
+          const ordersData = await ordersRes.json();
+          orders = normalizeOrdersResponse(ordersData).sort((a, b) => {
+            const dateA = new Date(a.createdAt || a.data || a.date || a.fecha || a.updatedAt || 0);
+            const dateB = new Date(b.createdAt || b.data || b.date || b.fecha || b.updatedAt || 0);
+            return dateB - dateA;
+          });
+          totalOrders = orders.length;
+          totalSales = orders.reduce((sum, order) => {
+            const amount = order.total || order.amount || order.totalAmount || order.importe || order.preu_total || order.import_total || 0;
+            return sum + Number(amount);
+          }, 0);
+
+          const adminOrderList = document.getElementById("adminOrderList");
+          if (adminOrderList) {
+            adminOrderList.innerHTML = orders.slice(0, 50).map(order => {
+              const id = order._id || order.id || order.orderId || "";
+              const total = order.total || order.amount || order.preu_total || order.import_total || 0;
+              const date = order.createdAt || order.data || order.date || order.fecha || order.updatedAt;
+              const dateStr = date ? formatDateTime(date) : "-";
+              const userStr = order.id_usuari && order.id_usuari.email ? order.id_usuari.email : (order.id_usuari || order.userEmail || order.userId || "Usuari desconegut");
+              return `<div class="admin-item">
+                  <div><strong>Compra ${String(id).slice(-8)} - ${userStr}</strong> <div class="meta">${dateStr}</div></div>
+                  <div>${Number(total).toFixed(2)} EUR</div>
+               </div>`;
+            }).join("") || '<div class="profile-item"><span class="meta">Encara no hi ha comandes.</span></div>';
+          }
+        }
+        document.getElementById("statPedidos").textContent = totalOrders;
+        document.getElementById("statVentas").textContent = `€${totalSales.toFixed(2)}`;
+
+        updateAdminCharts(orders);
+        await loadAdminUsers();
+
+      } catch (err) {
+        console.error("Error carregant l'administrador", err);
+      }
+    }
+
+    async function loadAdminUsers() {
+      const token = localStorage.getItem("token") || "";
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      };
+      const usersRes = await fetch(`${API_BASE}/user`, { headers });
+      if (usersRes.ok) {
+        const usersData = await usersRes.json();
+        const users = Array.isArray(usersData) ? usersData : (usersData.users || []);
+        document.getElementById("statUsuarios").textContent = users.length;
+        const adminUserList = document.getElementById("adminUserList");
+
+        adminUserList.innerHTML = `
+            <select id="adminUserSelect" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 10px;">
+              <option value="">Selecciona un usuari per eliminar...</option>
+              ${users.map(u => `<option value="${u._id || u.id}">${u.name || 'Sense nom'} (${u.email}) - ${u.role || 'client'}</option>`).join("")}
+            </select>
+            <div style="text-align: right; margin-bottom: 12px;">
+              <button class="btn-delete" onclick="deleteSelectedUser()">Eliminar l'usuari seleccionat</button>
+            </div>
+            <div style="max-height: 200px; overflow-y: auto; display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 10px;">
+              ${users.map(u => `
+                <div class="admin-item">
+                  <div>
+                    <strong>${u.name || 'Sense nom'}</strong>
+                    <div class="meta">${u.email} - ${u.role || 'client'}</div>
+                  </div>
+                  <div class="admin-item-actions">
+                    <button class="btn-delete" onclick="deleteUser('${u._id || u.id}')">Eliminar</button>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          `;
+      }
+    }
+
+    window.deleteSelectedUser = function () {
+      const select = document.getElementById("adminUserSelect");
+      if (select && select.value) {
+        deleteUser(select.value);
+      } else {
+        alert("Selecciona un usuari primer");
+      }
+    };
+
+    window.deleteUser = async function (id) {
+      if (!confirm("Estàs segur que vols eliminar aquest usuari?")) return;
+      const token = localStorage.getItem("token") || "";
+      try {
+        const res = await fetch(`${API_BASE}/user/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        if (!res.ok) throw new Error("No s'ha pogut eliminar l'usuari");
+        alert("Usuari eliminat correctament");
+        loadAdminUsers();
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // The admin charts are rendered dynamically when the admin panel is opened.
+    function showSuccessPopup(msg) {
+      const popup = document.createElement('div');
+      popup.style.cssText = `
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #4caf82;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    z-index: 9999;
+  `;
+      popup.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;line-height:1;">✕</button>`;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 4000);
+    }
+    document.getElementById('profileForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const password = document.getElementById('profilePasswordInput').value;
+      if (password.trim() !== '') {
+        showSuccessPopup('Contrasenya actualitzada correctament ✓');
+      }
+    });
   </script>
 </body>
-</html>
 
+</html>
